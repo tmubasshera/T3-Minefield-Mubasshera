@@ -63,6 +63,13 @@ namespace T3_Minefield_Mubasshera
             {'0', 'B', 'S', 'S', 'B'}
         };
 
+        static void DisplayNodesList(List<Node> nodes)
+        {
+            foreach (Node n in nodes)
+            {
+                Console.WriteLine(" ( " + n.X + " , " + n.Y + " ) ");
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -81,5 +88,6 @@ namespace T3_Minefield_Mubasshera
                 }
             }
         }
+
     }
 }
