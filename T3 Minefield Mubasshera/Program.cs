@@ -32,7 +32,7 @@ namespace T3_Minefield_Mubasshera
 
     class Traverser
     {
-        Traverser(Node startPos)
+        public Traverser(Node startPos)
         {
             CurrentPos = startPos;
             PrevPos = null;
@@ -71,6 +71,19 @@ namespace T3_Minefield_Mubasshera
             return neighbors;
         }
 
+        public List<Node> GetSafeNeighbors(char[,] minefield)
+        {
+            List<Node> neighbours = this.GetNeighbours();
+            List<Node> safeNeighbors = new List<Node>();
+            foreach (Node n in neighbours)
+            {
+                if (minefield[n.X,n.Y] == 'S' && n.X >= 0 && n.X < minefield.GetLength(0) && n.Y >= 0 && n.Y < minefield.GetLength(1))
+                {
+                    safeNeighbors.Add(n);
+                }
+            }
+            return safeNeighbors;
+        }
     }
     
 
