@@ -103,7 +103,7 @@ namespace T3_Minefield_Mubasshera
         {
             foreach (Node n in nodes)
             {
-                Console.WriteLine(" ( " + n.X + " , " + n.Y + " ) ");
+                Console.WriteLine(" (" + n.X + "," + n.Y + ")");
             }
         }
 
@@ -112,17 +112,10 @@ namespace T3_Minefield_Mubasshera
             Node startNode = new Node(0, 1);
             List<Node> safePath = new List<Node>();
 
-            for (int i=0; i<5; i++)
-            {
-                for (int j=0; j<5; j++)
-                {
-                    if (minefield[i, j] == 'S')
-                    {
-                        safePath.Add(new Node(i, j));
-                    }
+            Traverser totoshka = new Traverser(new Node (1,1));
+            safePath = totoshka.GetSafeNeighbors(minefield);
+            DisplayNodesList(safePath);
 
-                }
-            }
         }
 
     }
