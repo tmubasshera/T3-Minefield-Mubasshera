@@ -31,6 +31,11 @@ namespace T3_Minefield_Mubasshera
 
     class Traverser
     {
+        Traverser(Node startPos)
+        {
+            CurrentPos = startPos;
+            PrevPos = null;
+        }
         //to keep track of where dog/girl is currently
         public Node CurrentPos { set; get; }
         //to check the previous Node so it can later help Ally
@@ -41,10 +46,8 @@ namespace T3_Minefield_Mubasshera
         //function to change to new position
         public void MoveTo(Node newNode)
         {
-            Node temp = new Node(0,0);
-            temp = CurrentPos;
+            PrevPos = CurrentPos;
             CurrentPos = newNode;
-            PrevPos = temp;
         }
 
 
