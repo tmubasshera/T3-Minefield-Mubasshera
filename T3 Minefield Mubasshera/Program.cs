@@ -25,7 +25,8 @@ namespace T3_Minefield_Mubasshera
             {
                 return true;
             }
-            return false;
+            else 
+                return false;
         }
     }
 
@@ -35,6 +36,7 @@ namespace T3_Minefield_Mubasshera
         {
             CurrentPos = startPos;
             PrevPos = null;
+            TravelledPath = new List<Node>();
         }
         //to keep track of where dog/girl is currently
         public Node CurrentPos { set; get; }
@@ -50,6 +52,24 @@ namespace T3_Minefield_Mubasshera
             CurrentPos = newNode;
         }
 
+        //Getting neighbors (assuming traversing diagonally is possible) 
+        public List<Node> GetNeighbours()
+        {
+            List<Node> neighbors = new List<Node>();
+            for (int i= (this.CurrentPos.X-1); i<= (this.CurrentPos.X+1); i++)
+            {
+                for  (int j =(this.CurrentPos.Y-1); j <=(this.CurrentPos.Y+1); j++)
+                {
+                    if (i==CurrentPos.X && j==CurrentPos.Y)
+                    {
+                        continue;
+                    }
+                    else
+                    neighbors.Add(new Node(i,j));
+                }
+            }
+            return neighbors;
+        }
 
     }
     
