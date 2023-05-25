@@ -12,9 +12,16 @@ namespace T3_Minefield_Mubasshera
         {
             X = x;
             Y = y;
+            
         }
-        public bool IsVisited { set; get; } 
-        public bool IsSafe { set; get; }
+        //public bool IsVisited { set; get; } 
+        public bool IsSafe(char[,] minefield)
+        {
+            if (minefield[X, Y] == 'S')
+                return true;
+            else
+                return false;
+        }
 
         public bool isNeighbour(Node check)
         {
@@ -77,7 +84,7 @@ namespace T3_Minefield_Mubasshera
             List<Node> safeNeighbors = new List<Node>();
             foreach (Node n in neighbours)
             {
-                if (minefield[n.X,n.Y] == 'S' && n.X >= 0 && n.X < minefield.GetLength(0) && n.Y >= 0 && n.Y < minefield.GetLength(1))
+                if (n.X >= 0 && n.X < minefield.GetLength(0) && n.Y >= 0 && n.Y < minefield.GetLength(1) && minefield[n.X, n.Y] == 'S')
                 {
                     safeNeighbors.Add(n);
                 }
@@ -107,13 +114,49 @@ namespace T3_Minefield_Mubasshera
             }
         }
 
+        public static List<Node> travelledPath = new List<Node>();
+        static List<Node> FindSafePath(Traverser totoshka, char[,] minefield, Node startNode, Node endNode)
+        {
+            totoshka.CurrentPos = startNode;
+            travelledPath.Add(totoshka.CurrentPos);
+            //totoshka.CurrentPos.IsVisited = true;
+            if (startNode.isNeighbour(endNode))
+            {
+                totoshka.MoveTo(endNode);//Moveto already updated IsVisited
+                travelledPath.Add(endNode);
+                return travelledPath;
+            }
+            List <Node> totoshkasNeighbors = totoshka.GetSafeNeighbors(minefield);
+            Random random = new Random();
+            Node nextNode = null;
+            while (totoshkasNeighbors.Count > 0)
+            {
+                int randomIndex = random.Next(totoshkasNeighbors.Count);
+                nextNode = totoshkasNeighbors[randomIndex];
+                
+                if (!travelledPath.Contains(nextNode))
+                {
+                    break;
+                }
+            }
+
+            totoshka.MoveTo(nextNode);
+            travelledPath.Add(nextNode);
+
+            return FindSafePath(totoshka, minefield, nextNode, endNode);
+            
+
+        }
+
         static void Main(string[] args)
         {
             Node startNode = new Node(0, 1);
             List<Node> safePath = new List<Node>();
 
             Traverser totoshka = new Traverser(new Node (1,1));
-            safePath = totoshka.GetSafeNeighbors(minefield);
+
+            safePath = FindSafePath(totoshka, minefield, new Node(0, 1), new Node(3, 4));
+            //safePath = totoshka.GetSafeNeighbors(minefield);
             DisplayNodesList(safePath);
 
         }
