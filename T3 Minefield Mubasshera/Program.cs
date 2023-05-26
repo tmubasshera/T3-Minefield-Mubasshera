@@ -39,19 +39,20 @@ namespace T3_Minefield_Mubasshera
 
     class Traverser
     {
+        public Node CurrentPos { set; get; }
+        //to check the previous Node so it can later help Ally
+        public Node PrevPos { set; get; }
+        //need to keep track of the path already travelled
+        public List<Node> TravelledPath { set; get; }
+
         public Traverser(Node startPos)
         {
             CurrentPos = startPos;
             PrevPos = null;
             TravelledPath = new List<Node>();
         }
-        //to keep track of where dog/girl is currently
-        public Node CurrentPos { set; get; }
-        //to check the previous Node so it can later help Ally
-        public Node PrevPos { set; get; }
-
-        //need to keep track of the path already travelled
-        public List<Node> TravelledPath { set; get; }
+        
+        
         //function to change to new position
         public void MoveTo(Node newNode)
         {
@@ -96,16 +97,14 @@ namespace T3_Minefield_Mubasshera
 
     class Program
     {
-        public int n = 5, m = 5;
         static char[,] minefield = new char[,]
-        {
-            {'0', 'S', 'B', 'B', '0'},
-            {'B', 'S', 'S', 'S', '0'},
-            {'0', 'B', 'B', 'S', 'B'},
-            {'B', '0', 'B', 'S', 'B'},
-            {'0', 'B', 'S', 'S', 'B'}
-        };
-
+            {
+                {'0', 'S', 'B', 'B', '0'},
+                {'B', 'S', 'B', 'S', '0'},
+                {'0', 'B', 'S', 'S', 'B'},
+                {'B', '0', 'B', 'S', 'B'},
+                {'0', 'B', 'S', 'S', 'B'}
+            };
         static void DisplayNodesList(List<Node> nodes)
         {
             foreach (Node n in nodes)
@@ -114,13 +113,12 @@ namespace T3_Minefield_Mubasshera
             }
         }
 
-        public static List<Node> travelledPath = new List<Node>();
-        static List<Node> FindSafePath(Traverser totoshka, char[,] minefield, Node startNode, Node endNode)
+     
+        static List<Node> FindSafePath(Traverser totoshka, Node startNode, Node endNode, List<Node> travelledPath)
         {
-            totoshka.CurrentPos = startNode;
+            totoshka.MoveTo(startNode);
             travelledPath.Add(totoshka.CurrentPos);
-            //totoshka.CurrentPos.IsVisited = true;
-            if (startNode.isNeighbour(endNode))
+            if (totoshka.CurrentPos.isNeighbour(endNode))
             {
                 totoshka.MoveTo(endNode);//Moveto already updated IsVisited
                 travelledPath.Add(endNode);
@@ -138,24 +136,26 @@ namespace T3_Minefield_Mubasshera
                 {
                     break;
                 }
+                totoshkasNeighbors.RemoveAt(randomIndex);
             }
 
-            totoshka.MoveTo(nextNode);
-            travelledPath.Add(nextNode);
+            //totoshka.MoveTo(nextNode);
+            //totoshka.TravelledPath.Add(nextNode);
 
-            return FindSafePath(totoshka, minefield, nextNode, endNode);
-            
+            return FindSafePath(totoshka, nextNode, endNode, travelledPath);
 
         }
 
         static void Main(string[] args)
         {
             Node startNode = new Node(0, 1);
+            Node endNode = new Node(3, 4);
+            List<Node> travelledPath = new List<Node>();
             List<Node> safePath = new List<Node>();
 
-            Traverser totoshka = new Traverser(new Node (1,1));
+            Traverser totoshka = new Traverser(startNode);
 
-            safePath = FindSafePath(totoshka, minefield, new Node(0, 1), new Node(3, 4));
+            safePath = FindSafePath(totoshka, new Node(0, 1), new Node(3, 4), travelledPath);
             //safePath = totoshka.GetSafeNeighbors(minefield);
             DisplayNodesList(safePath);
 
