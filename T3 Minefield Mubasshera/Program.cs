@@ -11,10 +11,10 @@ namespace T3_Minefield_Mubasshera
         public Node(int x, int y)//constructor
         {
             X = x;
-            Y = y;
-            
+            Y = y; 
         }
 
+        //to check if two nodes are neighbors (assuming Diagonal Neighbours are valid, as seen in Question)
         public bool isNeighbour(Node check)
         {
             int dx = Math.Abs(this.X - check.X);
@@ -29,6 +29,7 @@ namespace T3_Minefield_Mubasshera
         }
     }
 
+   
     class Traverser
     {
         public Node CurrentPos { set; get; }
@@ -85,14 +86,17 @@ namespace T3_Minefield_Mubasshera
 
     class Program
     {
+        //creating a minefield with safe path (assuming legal diagonal traversion)
         static char[,] minefield = new char[,]
-            {
-                {'0', 'S', 'B', 'B', '0'},
-                {'B', 'S', 'B', 'B', '0'},
-                {'0', 'B', 'S', 'B', 'B'},
-                {'B', '0', 'S', 'B', 'B'},
-                {'0', 'B', 'S', 'S', 'B'}
-            };
+         {
+             {'0', 'S', 'B', 'B', '0'},
+             {'B', 'S', 'B', 'B', '0'},
+             {'0', 'B', 'S', 'B', 'B'},
+             {'B', '0', 'S', 'B', 'B'},
+             {'0', 'B', 'S', 'S', 'B'}
+         };
+
+        //To display the paths covered 
         static void Display(List<Node> totoshkaPath, List<Node> allyPath)
         {
             Console.WriteLine("Path as traversed by Totoshka and Ally: ");
@@ -106,6 +110,7 @@ namespace T3_Minefield_Mubasshera
             }
         }
 
+        //function to check if a node is present in a list 
         static bool checkIfInList(List<Node> travelled, Node n)
         {
             foreach (Node t in travelled)
@@ -116,7 +121,10 @@ namespace T3_Minefield_Mubasshera
             return false;
         }
 
-        static void FindSafePath(Traverser totoshka, Traverser ally, Node startNode, Node endNode, List<Node> totoshkaPath, List<Node> allyPath)
+
+        //THE ALGORITHM TO HELP TOTOSHKA PASS DODGING BOMBS AND ALLY FOLLOW TOTOSHKA
+        //using recursion
+        static void PassThroughMinefield(Traverser totoshka, Traverser ally, Node startNode, Node endNode, List<Node> totoshkaPath, List<Node> allyPath)
         {
             totoshka.MoveTo(startNode);
             ally.MoveTo(totoshka.PrevPos);
@@ -146,26 +154,26 @@ namespace T3_Minefield_Mubasshera
                 }
                 totoshkasNeighbors.RemoveAt(randomIndex);
             }
-            FindSafePath(totoshka, ally, nextNode, endNode, totoshkaPath,allyPath);
+            PassThroughMinefield(totoshka, ally, nextNode, endNode, totoshkaPath,allyPath);
         }
 
         static void Main(string[] args)
         {
+            //declaring start and end nodes
             Node startNode = new Node(0, 1);
             Node endNode = new Node(4,3);
+
             List<Node> totoshkaPath = new List<Node>();
             List<Node> allyPath = new List<Node>();
-            List<Node> safePath = new List<Node>();
 
+            //initializing Totoshka and Ally positions before starting to pass through the minefield
             Traverser totoshka = new Traverser(new Node(-1,-1));
             Traverser ally = new Traverser(new Node(-1, -1));
 
-            FindSafePath(totoshka, ally, startNode, endNode, totoshkaPath, allyPath);
+            PassThroughMinefield(totoshka, ally, startNode, endNode, totoshkaPath, allyPath);
             
-            
+            //display the traversed path
             Display(totoshkaPath, allyPath);
-
-           
 
         }
 
