@@ -93,11 +93,16 @@ namespace T3_Minefield_Mubasshera
                 {'B', '0', 'S', 'B', 'B'},
                 {'0', 'B', 'S', 'S', 'B'}
             };
-        static void DisplayNodesList(List<Node> nodes)
+        static void Display(List<Node> totoshkaPath, List<Node> allyPath)
         {
-            foreach (Node n in nodes)
+            Console.WriteLine("Path as traversed by Totoshka and Ally: ");
+            Console.Write("TotoshKa: \t Ally: \n");
+            for (int i=0; i<totoshkaPath.Count; i++)
             {
-                Console.WriteLine(" (" + n.X + "," + n.Y + ")");
+                
+                Console.Write(" (" + totoshkaPath[i].X + "," + totoshkaPath[i].Y + ")");
+                
+                Console.WriteLine("\t\t(" + allyPath[i].X + "," + allyPath[i].Y + ")");
             }
         }
 
@@ -111,16 +116,22 @@ namespace T3_Minefield_Mubasshera
             return false;
         }
 
-        static List<Node> FindSafePathBySmelling(Traverser totoshka, Node startNode, Node endNode, List<Node> travelledPath)
+        static void FindSafePath(Traverser totoshka, Traverser ally, Node startNode, Node endNode, List<Node> totoshkaPath, List<Node> allyPath)
         {
             totoshka.MoveTo(startNode);
-            travelledPath.Add(totoshka.CurrentPos);
+            ally.MoveTo(totoshka.PrevPos);
+            totoshkaPath.Add(totoshka.CurrentPos);
+            allyPath.Add(ally.CurrentPos);
             if (totoshka.CurrentPos.isNeighbour(endNode))
             {
                 totoshka.MoveTo(endNode);
-                travelledPath.Add(endNode);
-                return travelledPath;
+                ally.MoveTo(totoshka.PrevPos);
+
+                totoshkaPath.Add(totoshka.CurrentPos);
+                allyPath.Add(ally.CurrentPos);
+                return;
             }
+
             List <Node> totoshkasNeighbors = totoshka.GetSafeNeighbors(minefield);
             Random random = new Random();
             Node nextNode = null;
@@ -129,27 +140,32 @@ namespace T3_Minefield_Mubasshera
                 int randomIndex = random.Next(totoshkasNeighbors.Count);
                 nextNode = totoshkasNeighbors[randomIndex];
                 
-                if (!checkIfInList(travelledPath, nextNode))
+                if (!checkIfInList(totoshkaPath, nextNode))
                 {
                     break;
                 }
                 totoshkasNeighbors.RemoveAt(randomIndex);
             }
-            return FindSafePathBySmelling(totoshka, nextNode, endNode, travelledPath);
+            FindSafePath(totoshka, ally, nextNode, endNode, totoshkaPath,allyPath);
         }
 
         static void Main(string[] args)
         {
             Node startNode = new Node(0, 1);
             Node endNode = new Node(4,3);
-            List<Node> travelledPath = new List<Node>();
+            List<Node> totoshkaPath = new List<Node>();
+            List<Node> allyPath = new List<Node>();
             List<Node> safePath = new List<Node>();
 
-            Traverser totoshka = new Traverser(startNode);
+            Traverser totoshka = new Traverser(new Node(-1,-1));
+            Traverser ally = new Traverser(new Node(-1, -1));
 
-            safePath = FindSafePathBySmelling(totoshka, startNode, endNode, travelledPath);
-            //safePath = totoshka.GetSafeNeighbors(minefield);
-            DisplayNodesList(safePath);
+            FindSafePath(totoshka, ally, startNode, endNode, totoshkaPath, allyPath);
+            
+            
+            Display(totoshkaPath, allyPath);
+
+           
 
         }
 
